@@ -24,10 +24,13 @@ services:
       interval: 5s
       retries: 10
 
-#
-#  ewm-service:
-#    ports:
-#      - "8080:8080"
-#
-#  ewm-db:
-#    image: postgres:16.1
+
+  ewm-service:
+    build: ewm
+    container_name: ewm-service
+    ports:
+      - "8080:8080"
+
+  ewm-db:
+    image: postgres:16.1
+    container_name: ewm-db
