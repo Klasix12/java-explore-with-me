@@ -34,7 +34,7 @@ public class StatsController {
     public Collection<ViewStatsDto> getStats(@RequestParam(required = false) @DateTimeFormat(pattern = format) LocalDateTime start,
                                              @RequestParam(required = false) @DateTimeFormat(pattern = format) LocalDateTime end,
                                              @RequestParam(required = false) List<String> uris,
-                                             @RequestParam(required = false, defaultValue = "false") Boolean unique) {
+                                             @RequestParam(defaultValue = "false") Boolean unique) {
         log.trace("Получение статистики");
         return statsService.getStats(new StatsParamsDto(start, end, uris, unique));
     }
