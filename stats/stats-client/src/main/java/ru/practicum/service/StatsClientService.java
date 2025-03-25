@@ -48,4 +48,8 @@ public class StatsClientService {
         ViewStatsDto[] response = restTemplate.getForObject(builder.encode().toUriString(), ViewStatsDto[].class);
         return response == null ? Collections.emptyList() : List.of(response);
     }
+
+    public List<ViewStatsDto> getStats() {
+        return getStats(null, null, null, false);
+    }
 }
