@@ -7,6 +7,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import ru.practicum.dto.LocationDto;
+import ru.practicum.util.DateFormat;
 import ru.practicum.validator.FutureFrom;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class NewEventDto {
     private String title;
 
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DateFormat.DATE_TIME_FORMAT)
     @FutureFrom(message = "Дата события не должна быть раньше 2 часов от текущего времени", duration = 2)
     private LocalDateTime eventDate;
 

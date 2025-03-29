@@ -9,6 +9,7 @@ import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.StatsParamsDto;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.service.StatsService;
+import ru.practicum.util.DateFormat;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -20,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class StatsController {
     private final StatsService statsService;
-    private static final String format = "yyyy-MM-dd HH:mm:ss";
+    private static final String format = DateFormat.DATE_TIME_FORMAT;
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)

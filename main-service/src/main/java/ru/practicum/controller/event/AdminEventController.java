@@ -11,6 +11,7 @@ import ru.practicum.dto.event.GetEventsAdminRequestParams;
 import ru.practicum.dto.event.UpdateEventAdminRequest;
 import ru.practicum.dto.event.state.EventState;
 import ru.practicum.service.EventService;
+import ru.practicum.util.DateFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,10 +30,10 @@ public class AdminEventController {
                                         @RequestParam(required = false) List<EventState> states,
                                         @RequestParam(required = false) List<Integer> categories,
                                         @RequestParam(required = false)
-                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                        @DateTimeFormat(pattern = DateFormat.DATE_TIME_FORMAT)
                                         LocalDateTime rangeStart,
                                         @RequestParam(required = false)
-                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                        @DateTimeFormat(pattern = DateFormat.DATE_TIME_FORMAT)
                                         LocalDateTime rangeEnd,
                                         @RequestParam(defaultValue = "0") Integer from,
                                         @RequestParam(defaultValue = "10") Integer size) {

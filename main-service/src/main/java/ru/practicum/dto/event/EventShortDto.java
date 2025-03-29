@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.user.UserShortDto;
+import ru.practicum.util.DateFormat;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +23,7 @@ public class EventShortDto {
 
     private Integer confirmedRequests;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DateFormat.DATE_TIME_FORMAT)
     private LocalDateTime eventDate;
 
     private UserShortDto initiator;

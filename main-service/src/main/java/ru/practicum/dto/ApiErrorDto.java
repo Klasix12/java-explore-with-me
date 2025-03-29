@@ -2,6 +2,7 @@ package ru.practicum.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import ru.practicum.util.DateFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,6 @@ public class ApiErrorDto {
     private String message;
     private String reason;
     private String status;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DateFormat.DATE_TIME_FORMAT)
     private LocalDateTime timestamp;
 }
