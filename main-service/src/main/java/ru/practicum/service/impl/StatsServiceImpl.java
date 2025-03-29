@@ -20,18 +20,13 @@ public class StatsServiceImpl implements StatsService {
 
     private final StatsClientService service;
 
-    @Override
-    public List<ViewStatsDto> getStats() {
-        log.trace("Получение статистики");
-        return service.getStats();
-    }
 
     @Override
-    public List<ViewStatsDto> getStats(List<Integer> ids) {
-        log.info("Получение статистики. ids: {}", ids);
-        return service.getStats(null, null, ids.stream()
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<Integer> ids, Boolean unique) {
+        log.info("Получение статистики. start: {}, end: {}, ids: {}, unique: {}", start, end, ids, unique);
+        return service.getStats(start, end, ids.stream()
                 .map(id -> String.format("/events/%d", id))
-                .collect(Collectors.toList()), true);
+                .collect(Collectors.toList()), unique);
     }
 
     @Override

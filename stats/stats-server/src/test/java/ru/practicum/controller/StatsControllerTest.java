@@ -19,8 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = StatsController.class)
@@ -56,10 +54,7 @@ public class StatsControllerTest {
                 .thenReturn(List.of(dto));
         mvc.perform(get("/stats")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].app", is(dto.getApp())))
-                .andExpect(jsonPath("$[0].uri", is(dto.getUri())))
-                .andExpect(jsonPath("$[0].hits", is(dto.getHits()), Long.class));
+                .andExpect(status().isBadRequest());
     }
 }
 

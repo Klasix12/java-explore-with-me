@@ -32,8 +32,8 @@ public class StatsController {
 
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ViewStatsDto> getStats(@RequestParam(required = false) @DateTimeFormat(pattern = format) LocalDateTime start,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern = format) LocalDateTime end,
+    public Collection<ViewStatsDto> getStats(@RequestParam @DateTimeFormat(pattern = format) LocalDateTime start,
+                                             @RequestParam @DateTimeFormat(pattern = format) LocalDateTime end,
                                              @RequestParam(required = false) List<String> uris,
                                              @RequestParam(defaultValue = "false") Boolean unique) {
         log.trace("Получение статистики");

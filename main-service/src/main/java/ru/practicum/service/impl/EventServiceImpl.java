@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -98,15 +99,18 @@ public class EventServiceImpl implements EventService {
                             Sort.by(Sort.Direction.DESC, "eventDate"))).stream()
                     .toList();
         } else {
-            List<ViewStatsDto> views = statsService.getStats().stream()
+            List<ViewStatsDto> views = statsService.getStats(
+                            LocalDateTime.of(2010, 1, 1, 1, 1),
+                            LocalDateTime.now(),
+                            null,
+                            true).stream()
                     .filter(dto -> StringUtils.countMatches(dto.getUri(), "/") == 2)
                     .collect(Collectors.toList());
             List<Integer> ids = getPopularEventIds(views, params.getFrom(), params.getSize());
             events = repository.findAllByIdIn(ids);
         }
-        List<EventShortDto> eventDtos = EventMapper.toShortDto(events);
-        setViewsToEvents(eventDtos);
-        return eventDtos;
+        setViewsToEvents(events);
+        return EventMapper.toShortDto(events);
     }
 
     @Override
@@ -116,17 +120,16 @@ public class EventServiceImpl implements EventService {
         if (event.getState() != EventState.PUBLISHED) {
             throw new NotFoundException("Событие с id " + id + " не найдено");
         }
-        EventFullDto dto = EventMapper.toDto(event);
-        setViewsToEvent(dto);
-        return dto;
+        setViewsToEvent(event);
+        return EventMapper.toDto(event);
     }
 
     @Override
     public List<EventShortDto> userGetEvents(int userId, int from, int size) {
         log.info("Получение событий пользователя. userId: {}, from: {}, size: {}", userId, from, size);
-        List<EventShortDto> dtos = EventMapper.toShortDto(repository.findAllByInitiateId(userId, PageRequest.of(from, size)));
-        setViewsToEvents(dtos);
-        return dtos;
+        List<Event> events = repository.findAllByInitiateId(userId, PageRequest.of(from, size));
+        setViewsToEvents(events);
+        return EventMapper.toShortDto(events);
     }
 
     @Override
@@ -142,10 +145,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto userGetEvent(int userId, int eventId) {
         log.info("Получение события пользователем. userId: {}, eventId: {}", userId, eventId);
-        EventFullDto dto = EventMapper.toDto(repository.findByIdAndInitiateId(eventId, userId)
-                .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено")));
-        setViewsToEvent(dto);
-        return dto;
+        Event event = repository.findByIdAndInitiateId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено"));
+        setViewsToEvent(event);
+        return EventMapper.toDto(event);
     }
 
     @Override
@@ -169,21 +172,34 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toDto(event);
     }
 
-    private void setViewsToEvents(List<? extends EventShortDto> dtos) {
-        List<Integer> ids = dtos.stream()
-                .map(EventShortDto::getId)
+    private void setViewsToEvents(List<Event> events) {
+        List<Integer> ids = events.stream()
+                .filter(event -> event.getState() == EventState.PUBLISHED)
+                .map(Event::getId)
                 .collect(Collectors.toList());
-        Map<Integer, Long> idsViews = statsService.getStats(ids).stream()
+        LocalDateTime min = events.stream()
+                .map(Event::getPublishedOn)
+                .filter(Objects::nonNull)
+                .min(LocalDateTime::compareTo)
+                .orElse(null);
+        if (min == null) {
+            return;
+        }
+        LocalDateTime max = LocalDateTime.now();
+        Map<Integer, Long> idsViews = statsService.getStats(min, max, ids, true).stream()
                 .collect(Collectors.toMap(view -> extractIdFromUrl(view.getUri()), ViewStatsDto::getHits));
-        for (EventShortDto dto : dtos) {
-            dto.setViews(idsViews.containsKey(dto.getId()) ? idsViews.get(dto.getId()) : 0);
+        for (Event event : events) {
+            event.setViews(idsViews.containsKey(event.getId()) ? idsViews.get(event.getId()) : 0);
         }
     }
 
-    private void setViewsToEvent(EventShortDto dto) {
-        List<ViewStatsDto> dtos = statsService.getStats(List.of(dto.getId()));
+    private void setViewsToEvent(Event event) {
+        if (event.getState() != EventState.PUBLISHED) {
+            return;
+        }
+        List<ViewStatsDto> dtos = statsService.getStats(event.getPublishedOn(), LocalDateTime.now(), List.of(event.getId()), true);
         if (!dtos.isEmpty()) {
-            dto.setViews(dtos.get(0).getHits());
+            event.setViews(dtos.get(0).getHits());
         }
     }
 
