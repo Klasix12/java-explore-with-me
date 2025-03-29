@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.dto.ApiErrorDto;
-import ru.practicum.exception.CategoryNotEmptyException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.UpdateEventException;
-import ru.practicum.exception.UpdateRequestException;
+import ru.practicum.exception.*;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +25,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return getDefaultError(e, "Ошибка валидации данных", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorDto handleLocalDateTimeException(LocalDateTimeException e) {
+        return getDefaultError(e, "Ошибка при валидации даты", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler

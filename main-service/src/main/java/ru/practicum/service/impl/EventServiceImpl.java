@@ -14,6 +14,7 @@ import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.event.state.AdminStateAction;
 import ru.practicum.dto.event.state.EventState;
+import ru.practicum.exception.LocalDateTimeException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.UpdateEventException;
 import ru.practicum.mapper.EventMapper;
@@ -83,6 +84,11 @@ public class EventServiceImpl implements EventService {
         log.info("Получение событий. params: {}", params);
         List<Event> events;
         BooleanBuilder predicate = getPublicPredicate(params);
+        if (params.getRangeStart() != null &&
+                params.getRangeEnd() != null &&
+                params.getRangeStart().isAfter(params.getRangeEnd())) {
+            throw new LocalDateTimeException("Дата старта не может быть позже даты окончания");
+        }
         if (params.getEventSort() == EventSort.EVENT_DATE) {
             events = repository.findAll(predicate, PageRequest.of(
                             params.getFrom(),

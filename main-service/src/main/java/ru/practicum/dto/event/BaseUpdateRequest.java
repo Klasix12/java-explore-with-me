@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public abstract class BaseUpdateRequest<T> {
+    @Size(min = 20, max = 2000)
     private String annotation;
 
     @Size(min = 20, max = 7000)
@@ -31,5 +32,6 @@ public abstract class BaseUpdateRequest<T> {
 
     private T stateAction;
 
+    @Size(min = 3, max = 120)
     private String title;
 }
