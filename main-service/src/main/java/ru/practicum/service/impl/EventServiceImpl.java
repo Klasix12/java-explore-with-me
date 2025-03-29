@@ -14,6 +14,7 @@ import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.event.state.AdminStateAction;
 import ru.practicum.dto.event.state.EventState;
+import ru.practicum.dto.event.state.UserStateAction;
 import ru.practicum.exception.LocalDateTimeException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.UpdateEventException;
@@ -149,6 +150,11 @@ public class EventServiceImpl implements EventService {
         }
         if (event.getInitiate().getId() != userId) {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
+        }
+        if (req.getStateAction() == UserStateAction.SEND_TO_REVIEW) {
+            event.setState(EventState.PENDING);
+        } else if (req.getStateAction() == UserStateAction.CANCEL_REVIEW) {
+            event.setState(EventState.CANCELED);
         }
         updateEvent(event, req);
         return EventMapper.toDto(event);

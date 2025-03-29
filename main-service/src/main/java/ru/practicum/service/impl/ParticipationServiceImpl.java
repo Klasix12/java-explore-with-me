@@ -100,7 +100,6 @@ public class ParticipationServiceImpl implements ParticipationService {
     @Transactional
     public EventRequestStatusUpdateResult updateRequests(int userId, int eventId, EventRequestStatusUpdateRequest req) {
         log.info("Пользователь обновляет запросы на событие. userId: {}, eventId: {}, request: {}", userId, eventId, req);
-        List<Participation> participations = repository.findAllByIdIn(req.getRequestsIds());
         findUserByIdOrThrow(userId);
         Event event = findEventByIdOrThrow(eventId);
         if (event.getInitiate().getId() != userId) {
@@ -111,17 +110,20 @@ public class ParticipationServiceImpl implements ParticipationService {
         }
 
         var result = new EventRequestStatusUpdateResult();
+        List<Participation> participations = repository.findAllByIdIn(req.getRequestIds());
         ParticipationStatus status = req.getStatus() == RequestStatus.CONFIRMED ? ParticipationStatus.CONFIRMED : ParticipationStatus.REJECTED;
 
         if (status == ParticipationStatus.CONFIRMED) {
-            if (event.getParticipantLimit() >= event.getConfirmedRequests()) {
+            if (event.getConfirmedRequests() >= event.getParticipantLimit()) {
                 throw new UpdateRequestException("Для события с id " + eventId + " достигнут лимит количества участников");
             }
-            for (int i = 0; i < Math.min(event.getParticipantLimit() - event.getConfirmedRequests(), participations.size()); i++) {
+            int min = Math.min(event.getParticipantLimit() - event.getConfirmedRequests(), participations.size());
+            for (int i = 0; i < min; i++) {
                 Participation updatedParticipation = participations.remove(0);
                 updatedParticipation.setStatus(ParticipationStatus.CONFIRMED);
                 result.getConfirmedRequests().add(ParticipationMapper.toDto(updatedParticipation));
             }
+            event.setConfirmedRequests(event.getConfirmedRequests() + min);
             participations.forEach(p -> p.setStatus(ParticipationStatus.REJECTED));
         } else {
             for (Participation participation : participations) {

@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 @ToString
 public class EventRequestStatusUpdateRequest {
-    private List<Integer> requestsIds;
+    private List<Integer> requestIds;
     private RequestStatus status;
 }
