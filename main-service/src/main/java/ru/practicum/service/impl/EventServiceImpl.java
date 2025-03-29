@@ -180,9 +180,9 @@ public class EventServiceImpl implements EventService {
         event.setAnnotation(req.getAnnotation() != null ? req.getAnnotation() : event.getAnnotation());
         event.setDescription(req.getDescription() != null ? req.getDescription() : event.getDescription());
         event.setEventDate(req.getEventDate() != null ? req.getEventDate() : event.getEventDate());
-        event.setPaid(req.getPaid() != null && req.getPaid());
+        event.setPaid(req.getPaid() != null ? req.getPaid() : event.isPaid());
         event.setParticipantLimit(req.getParticipantLimit() != null ? req.getParticipantLimit() : event.getParticipantLimit());
-        event.setRequestModeration(req.getRequestModeration() != null && req.getRequestModeration());
+        event.setRequestModeration(req.getRequestModeration() != null ? req.getRequestModeration() : event.isRequestModeration());
         event.setTitle(req.getTitle() != null ? req.getTitle() : event.getTitle());
     }
 
