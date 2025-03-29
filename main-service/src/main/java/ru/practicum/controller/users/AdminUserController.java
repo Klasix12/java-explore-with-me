@@ -20,7 +20,7 @@ public class AdminUserController {
     private UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam List<Integer> ids,
+    public List<UserDto> getUsers(@RequestParam(required = false) List<Integer> ids,
                                   @RequestParam(defaultValue = "0") Integer from,
                                   @RequestParam(defaultValue = "10") Integer size) {
         log.trace("Получение пользователей");
