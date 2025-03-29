@@ -1,4 +1,4 @@
-package ru.practicum.controller.users;
+package ru.practicum.controller.event;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +23,10 @@ public class UserRequestController {
         return service.getEventRequests(userId);
     }
 
-    @PostMapping("/{eventId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addRequest(@PathVariable Integer userId,
-                                              @PathVariable Integer eventId) {
+                                              @RequestParam Integer eventId) {
         log.trace("Добавление запроса на участие");
         return service.addRequest(userId, eventId);
     }
