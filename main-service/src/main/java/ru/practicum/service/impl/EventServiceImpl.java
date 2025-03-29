@@ -107,12 +107,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventFullDto getEvent(int id) {
         log.info("Получение события. id: {}", id);
         Event event = findEventByIdOrThrow(id);
         if (event.getState() != EventState.PUBLISHED) {
             throw new NotFoundException("Событие с id " + id + " не найдено");
         }
+        event.setViews(event.getViews() + 1);
         return EventMapper.toDto(event);
     }
 
