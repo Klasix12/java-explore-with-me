@@ -62,8 +62,8 @@ public class ParticipationServiceImpl implements ParticipationService {
                 .created(LocalDateTime.now())
                 .requester(user)
                 .build();
-        if (!event.isRequestModeration()) {
-            participation.setStatus(ParticipationStatus.ACCEPTED);
+        if (!event.isRequestModeration() || event.getParticipantLimit() == 0) {
+            participation.setStatus(ParticipationStatus.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         }
         return ParticipationMapper.toDto(repository.save(participation));
@@ -79,7 +79,7 @@ public class ParticipationServiceImpl implements ParticipationService {
         if (participation.getRequester().getId() != userId) {
             throw new NotFoundException("Запрос с id " + requestId + " не найдено");
         }
-        if (participation.getStatus() == ParticipationStatus.ACCEPTED) {
+        if (participation.getStatus() == ParticipationStatus.CONFIRMED) {
             participation.getEvent().setConfirmedRequests(participation.getEvent().getConfirmedRequests() - 1);
         }
         participation.setStatus(ParticipationStatus.CANCELLED);
@@ -109,10 +109,14 @@ public class ParticipationServiceImpl implements ParticipationService {
         if (event.getParticipantLimit() == 0 || !event.isRequestModeration()) {
             throw new UpdateEventException("Для события с id " + eventId + " нет лимита заявок или отключена пре-модерация заявок");
         }
-        var result = new EventRequestStatusUpdateResult();
-        ParticipationStatus status = req.getStatus() == RequestStatus.CONFIRMED ? ParticipationStatus.ACCEPTED : ParticipationStatus.REJECTED;
 
-        if (status == ParticipationStatus.ACCEPTED) {
+        var result = new EventRequestStatusUpdateResult();
+        ParticipationStatus status = req.getStatus() == RequestStatus.CONFIRMED ? ParticipationStatus.CONFIRMED : ParticipationStatus.REJECTED;
+
+        if (status == ParticipationStatus.CONFIRMED) {
+            if (event.getParticipantLimit() >= event.getConfirmedRequests()) {
+                throw new UpdateRequestException("Для события с id " + eventId + " достигнут лимит количества участников");
+            }
             for (int i = 0; i < Math.min(event.getParticipantLimit() - event.getConfirmedRequests(), participations.size()); i++) {
                 Participation updatedParticipation = participations.remove(0);
                 updatedParticipation.setStatus(status);
