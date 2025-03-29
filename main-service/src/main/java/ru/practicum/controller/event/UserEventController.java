@@ -1,5 +1,6 @@
 package ru.practicum.controller.event;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class UserEventController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable Integer userId,
-                                 @RequestBody NewEventDto dto) {
+                                 @Valid @RequestBody NewEventDto dto) {
         log.trace("Добавление события");
         return service.userAddEvent(userId, dto);
     }
