@@ -44,7 +44,10 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto dto) {
         log.info("Добавление новой подборки. request: {}", dto);
-        List<Event> events = eventRepository.findAllById(dto.getEvents());
+        List<Event> events = null;
+        if (dto.getEvents() != null && dto.getEvents().size() > 0) {
+            events = eventRepository.findAllById(dto.getEvents());
+        }
         return CompilationMapper.toDto(repository.save(CompilationMapper.toEntity(dto, events)));
     }
 
