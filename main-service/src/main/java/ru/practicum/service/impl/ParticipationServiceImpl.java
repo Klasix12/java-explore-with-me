@@ -82,7 +82,7 @@ public class ParticipationServiceImpl implements ParticipationService {
         if (participation.getStatus() == ParticipationStatus.CONFIRMED) {
             participation.getEvent().setConfirmedRequests(participation.getEvent().getConfirmedRequests() - 1);
         }
-        participation.setStatus(ParticipationStatus.CANCELLED);
+        participation.setStatus(ParticipationStatus.CANCELED);
         return ParticipationMapper.toDto(participation);
     }
 

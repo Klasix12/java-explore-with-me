@@ -1,5 +1,5 @@
 package ru.practicum.dto.participation;
 
 public enum ParticipationStatus {
-    PENDING, CONFIRMED, REJECTED, CANCELLED
+    PENDING, CONFIRMED, REJECTED, CANCELED
 }
