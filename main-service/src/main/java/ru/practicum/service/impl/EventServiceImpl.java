@@ -205,8 +205,11 @@ public class EventServiceImpl implements EventService {
 
     private List<Integer> getPopularEventIds(List<ViewStatsDto> views, int from, int size) {
         List<Integer> eventsIds = new ArrayList<>();
-        int min = Math.min(from * size, views.size() - 1);
-        int max = Math.min(from * size + size, views.size());
+        int min = from * size;
+        if (min >= views.size()) {
+            return eventsIds;
+        }
+        int max = Math.min(min + size, views.size());
         for (ViewStatsDto view : views.subList(min, max)) {
             eventsIds.add(extractIdFromUrl(view.getUri()));
         }
