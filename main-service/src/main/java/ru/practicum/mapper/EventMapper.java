@@ -35,6 +35,7 @@ public class EventMapper {
     public static EventShortDto toShortDto(Event event) {
         return EventShortDto.builder()
                 .id(event.getId())
+                .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
                 .description(event.getDescription())
                 .confirmedRequests(event.getConfirmedRequests())

@@ -17,6 +17,8 @@ public class EventShortDto {
 
     private Integer id;
 
+    private String annotation;
+
     private CategoryDto category;
 
     private String description;
