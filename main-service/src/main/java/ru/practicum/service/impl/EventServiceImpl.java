@@ -178,7 +178,7 @@ public class EventServiceImpl implements EventService {
                 .map(Event::getId)
                 .collect(Collectors.toList());
         LocalDateTime min = events.stream()
-                .map(Event::getPublishedOn)
+                .map(Event::getCreatedOn)
                 .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
@@ -197,7 +197,7 @@ public class EventServiceImpl implements EventService {
         if (event.getState() != EventState.PUBLISHED) {
             return;
         }
-        List<ViewStatsDto> dtos = statsService.getStats(event.getPublishedOn(), LocalDateTime.now(), List.of(event.getId()), true);
+        List<ViewStatsDto> dtos = statsService.getStats(event.getCreatedOn(), LocalDateTime.now(), List.of(event.getId()), true);
         if (!dtos.isEmpty()) {
             event.setViews(dtos.get(0).getHits());
         }
