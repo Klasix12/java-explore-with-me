@@ -11,6 +11,7 @@ import ru.practicum.service.StatsService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,6 +24,14 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> getStats() {
         log.trace("Получение статистики");
         return service.getStats();
+    }
+
+    @Override
+    public List<ViewStatsDto> getStats(List<Integer> ids) {
+        log.info("Получение статистики. ids: {}", ids);
+        return service.getStats(null, null, ids.stream()
+                .map(id -> String.format("/events/%d", id))
+                .collect(Collectors.toList()), true);
     }
 
     @Override

@@ -31,6 +31,7 @@ import ru.practicum.service.StatsService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -103,25 +104,29 @@ public class EventServiceImpl implements EventService {
             List<Integer> ids = getPopularEventIds(views, params.getFrom(), params.getSize());
             events = repository.findAllByIdIn(ids);
         }
-        return EventMapper.toShortDto(events);
+        List<EventShortDto> eventDtos = EventMapper.toShortDto(events);
+        setViewsToEvents(eventDtos);
+        return eventDtos;
     }
 
     @Override
-    @Transactional
     public EventFullDto getEvent(int id) {
         log.info("Получение события. id: {}", id);
         Event event = findEventByIdOrThrow(id);
         if (event.getState() != EventState.PUBLISHED) {
             throw new NotFoundException("Событие с id " + id + " не найдено");
         }
-        event.setViews(event.getViews() + 1);
-        return EventMapper.toDto(event);
+        EventFullDto dto = EventMapper.toDto(event);
+        setViewsToEvent(dto);
+        return dto;
     }
 
     @Override
     public List<EventShortDto> userGetEvents(int userId, int from, int size) {
         log.info("Получение событий пользователя. userId: {}, from: {}, size: {}", userId, from, size);
-        return EventMapper.toShortDto(repository.findAllByInitiateId(userId, PageRequest.of(from, size)));
+        List<EventShortDto> dtos = EventMapper.toShortDto(repository.findAllByInitiateId(userId, PageRequest.of(from, size)));
+        setViewsToEvents(dtos);
+        return dtos;
     }
 
     @Override
@@ -137,8 +142,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto userGetEvent(int userId, int eventId) {
         log.info("Получение события пользователем. userId: {}, eventId: {}", userId, eventId);
-        return EventMapper.toDto(repository.findByIdAndInitiateId(eventId, userId)
+        EventFullDto dto = EventMapper.toDto(repository.findByIdAndInitiateId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено")));
+        setViewsToEvent(dto);
+        return dto;
     }
 
     @Override
@@ -162,6 +169,24 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toDto(event);
     }
 
+    private void setViewsToEvents(List<? extends EventShortDto> dtos) {
+        List<Integer> ids = dtos.stream()
+                .map(EventShortDto::getId)
+                .collect(Collectors.toList());
+        Map<Integer, Long> idsViews = statsService.getStats(ids).stream()
+                .collect(Collectors.toMap(view -> extractIdFromUrl(view.getUri()), ViewStatsDto::getHits));
+        for (EventShortDto dto : dtos) {
+            dto.setViews(idsViews.containsKey(dto.getId()) ? idsViews.get(dto.getId()) : 0);
+        }
+    }
+
+    private void setViewsToEvent(EventShortDto dto) {
+        List<ViewStatsDto> dtos = statsService.getStats(List.of(dto.getId()));
+        if (!dtos.isEmpty()) {
+            dto.setViews(dtos.get(0).getHits());
+        }
+    }
+
     private List<Integer> getPopularEventIds(List<ViewStatsDto> views, int from, int size) {
         List<Integer> eventsIds = new ArrayList<>();
         int min = Math.min(from * size, views.size() - 1);
@@ -173,9 +198,12 @@ public class EventServiceImpl implements EventService {
     }
 
     private int extractIdFromUrl(String url) {
-        Pattern pattern = Pattern.compile(url);
-        Matcher matcher = pattern.matcher("^\\/events\\/(\\d+)(?:\\/|$)");
-        return Integer.parseInt(matcher.group(1));
+        Pattern pattern = Pattern.compile("^/events/(\\d+)");
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+        return 0;
     }
 
     private void updateEvent(Event event, BaseUpdateRequest<?> req) {

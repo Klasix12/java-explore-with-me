@@ -61,7 +61,7 @@ public class Event {
     private String title;
 
     @Column(name = "views")
-    private int views;
+    private long views;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_state")
