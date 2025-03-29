@@ -37,9 +37,9 @@ public class NewEventDto {
 
     private LocationDto location;
 
-    private Boolean paid;
+    private boolean paid;
 
-    private Integer participantLimit;
+    private int participantLimit;
 
     private Boolean requestModeration = true;
 }

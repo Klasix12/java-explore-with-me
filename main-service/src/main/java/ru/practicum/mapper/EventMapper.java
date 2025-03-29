@@ -76,7 +76,7 @@ public class EventMapper {
                 .createdOn(LocalDateTime.now())
                 .category(category)
                 .location(location)
-                .paid(dto.getPaid())
+                .paid(dto.isPaid())
                 .participantLimit(dto.getParticipantLimit())
                 .requestModeration(dto.getRequestModeration())
                 .state(EventState.PENDING)
