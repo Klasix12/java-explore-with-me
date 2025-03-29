@@ -138,6 +138,9 @@ public class EventServiceImpl implements EventService {
         if (event.getState() == EventState.PUBLISHED) {
             throw new UpdateEventException("Опубликованные события не могут быть изменены");
         }
+        if (event.getState() == EventState.CANCELED) {
+            return EventMapper.toDto(event);
+        }
         if (event.getInitiate().getId() != userId) {
             throw new NotFoundException("Событие с id " + eventId + " не найдено");
         }
