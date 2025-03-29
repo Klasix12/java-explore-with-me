@@ -9,6 +9,7 @@ import ru.practicum.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
@@ -35,8 +36,8 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<UserDto> toDto(List<User> users) {
-        return users.stream()
+    public static List<UserDto> toDto(Iterable<User> users) {
+        return StreamSupport.stream(users.spliterator(), false)
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());
     }

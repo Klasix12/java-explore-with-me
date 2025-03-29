@@ -25,6 +25,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsers(List<Integer> ids, int from, int size) {
         log.info("Получение пользователей по id: {}", ids);
+        if (ids == null || ids.isEmpty()) {
+            return UserMapper.toDto(repository.findAll(PageRequest.of(from, size)));
+        }
         return UserMapper.toDto(repository.findAllByIdIn(ids, PageRequest.of(from, size)));
     }
 
