@@ -20,5 +20,5 @@ public class NewCompilationDto {
     @UniqueElements
     private List<Integer> events;
 
-    private Boolean pinned;
+    private boolean pinned;
 }

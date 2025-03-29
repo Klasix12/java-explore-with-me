@@ -32,7 +32,7 @@ public class CompilationMapper {
         return Compilation.builder()
                 .events(events)
                 .title(dto.getTitle())
-                .pinned(dto.getPinned())
+                .pinned(dto.isPinned())
                 .build();
     }
 }
