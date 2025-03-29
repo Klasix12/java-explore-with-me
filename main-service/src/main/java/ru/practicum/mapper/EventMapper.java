@@ -54,7 +54,7 @@ public class EventMapper {
                 .description(event.getDescription())
                 .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(event.getCreatedOn())
-                .initiate(UserMapper.toShortDto(event.getInitiate()))
+                .initiator(UserMapper.toShortDto(event.getInitiate()))
                 .location(LocationMapper.toDto(event.getLocation()))
                 .paid(event.isPaid())
                 .participantLimit(event.getParticipantLimit())

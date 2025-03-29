@@ -29,7 +29,7 @@ public class EventFullDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
 
-    private UserShortDto initiate;
+    private UserShortDto initiator;
 
     private LocationDto location;
 
