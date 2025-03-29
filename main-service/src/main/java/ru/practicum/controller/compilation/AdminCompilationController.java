@@ -20,7 +20,7 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto dto) {
+    public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto dto) {
         log.trace("Добавление подборки");
         return service.addCompilation(dto);
     }
