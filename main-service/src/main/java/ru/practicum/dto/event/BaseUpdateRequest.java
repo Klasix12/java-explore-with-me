@@ -1,5 +1,6 @@
 package ru.practicum.dto.event;
 
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public abstract class BaseUpdateRequest<T> {
 
     private Boolean paid;
 
+    @PositiveOrZero
     private Integer participantLimit;
 
     private Boolean requestModeration;
