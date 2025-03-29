@@ -119,11 +119,18 @@ public class ParticipationServiceImpl implements ParticipationService {
             }
             for (int i = 0; i < Math.min(event.getParticipantLimit() - event.getConfirmedRequests(), participations.size()); i++) {
                 Participation updatedParticipation = participations.remove(0);
-                updatedParticipation.setStatus(status);
+                updatedParticipation.setStatus(ParticipationStatus.CONFIRMED);
                 result.getConfirmedRequests().add(ParticipationMapper.toDto(updatedParticipation));
             }
+            participations.forEach(p -> p.setStatus(ParticipationStatus.REJECTED));
+        } else {
+            for (Participation participation : participations) {
+                if (participation.getStatus() == ParticipationStatus.CONFIRMED) {
+                    throw new UpdateRequestException("Заявку с id " + participation.getId() + " нельзя отменить т.к. она уже одобрена");
+                }
+                participation.setStatus(ParticipationStatus.REJECTED);
+            }
         }
-        participations.forEach(p -> p.setStatus(ParticipationStatus.REJECTED));
         result.setRejectedRequests(ParticipationMapper.toDto(participations));
         return result;
     }
