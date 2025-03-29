@@ -100,7 +100,7 @@ public class EventServiceImpl implements EventService {
                     .toList();
         } else {
             List<ViewStatsDto> views = statsService.getStats(
-                            LocalDateTime.of(2010, 1, 1, 1, 1),
+                            LocalDateTime.now().minusYears(1),
                             LocalDateTime.now(),
                             null,
                             true).stream()
@@ -174,7 +174,6 @@ public class EventServiceImpl implements EventService {
 
     private void setViewsToEvents(List<Event> events) {
         List<Integer> ids = events.stream()
-                .filter(event -> event.getState() == EventState.PUBLISHED)
                 .map(Event::getId)
                 .collect(Collectors.toList());
         LocalDateTime min = events.stream()
@@ -205,10 +204,7 @@ public class EventServiceImpl implements EventService {
 
     private List<Integer> getPopularEventIds(List<ViewStatsDto> views, int from, int size) {
         List<Integer> eventsIds = new ArrayList<>();
-        int min = from * size;
-        if (min >= views.size()) {
-            return eventsIds;
-        }
+        int min = Math.min(from * size, views.size());
         int max = Math.min(min + size, views.size());
         for (ViewStatsDto view : views.subList(min, max)) {
             eventsIds.add(extractIdFromUrl(view.getUri()));
