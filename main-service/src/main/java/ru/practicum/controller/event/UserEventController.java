@@ -47,7 +47,7 @@ public class UserEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable Integer userId,
                                     @PathVariable Integer eventId,
-                                    @RequestBody UpdateEventUserRequest req) {
+                                    @Valid @RequestBody UpdateEventUserRequest req) {
         return service.userUpdateEvent(userId, eventId, req);
     }
 
