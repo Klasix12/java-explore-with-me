@@ -58,6 +58,9 @@ public class EventServiceImpl implements EventService {
         log.info("Обновление события админом. id: {}, request: {}", id, req);
         Event event = findEventByIdOrThrow(id);
         if (req.getStateAction() != null) {
+            if (event.getState() == EventState.CANCELED) {
+                throw new UpdateEventException("Нельзя изменить отмененное событие");
+            }
             if (req.getStateAction() == AdminStateAction.PUBLISH_EVENT) {
                 if (event.getState() == EventState.PUBLISHED) {
                     throw new UpdateEventException("Нельзя опубликовать уже опубликованное событие");
