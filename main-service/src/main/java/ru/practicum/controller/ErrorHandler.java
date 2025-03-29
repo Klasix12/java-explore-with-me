@@ -27,7 +27,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return getDefaultError(e, "Ошибка валидации данных", HttpStatus.CONFLICT);
+        return getDefaultError(e, "Ошибка валидации данных", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
