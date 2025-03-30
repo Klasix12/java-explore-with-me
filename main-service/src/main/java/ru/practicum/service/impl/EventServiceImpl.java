@@ -109,8 +109,9 @@ public class EventServiceImpl implements EventService {
             List<Integer> ids = getPopularEventIds(views, params.getFrom(), params.getSize());
             events = repository.findAllByIdIn(ids);
         }
-        setViewsToEvents(events);
-        return EventMapper.toShortDto(events);
+        List<EventShortDto> dtos = EventMapper.toShortDto(events);
+        setViewsToEvents(events, dtos);
+        return dtos;
     }
 
     @Override
@@ -120,16 +121,18 @@ public class EventServiceImpl implements EventService {
         if (event.getState() != EventState.PUBLISHED) {
             throw new NotFoundException("Событие с id " + id + " не найдено");
         }
-        setViewsToEvent(event);
-        return EventMapper.toDto(event);
+        EventFullDto dto = EventMapper.toDto(event);
+        setViewsToEvent(event, dto);
+        return dto;
     }
 
     @Override
     public List<EventShortDto> userGetEvents(int userId, int from, int size) {
         log.info("Получение событий пользователя. userId: {}, from: {}, size: {}", userId, from, size);
         List<Event> events = repository.findAllByInitiateId(userId, PageRequest.of(from, size));
-        setViewsToEvents(events);
-        return EventMapper.toShortDto(events);
+        List<EventShortDto> dtos = EventMapper.toShortDto(events);
+        setViewsToEvents(events, dtos);
+        return dtos;
     }
 
     @Override
@@ -147,8 +150,9 @@ public class EventServiceImpl implements EventService {
         log.info("Получение события пользователем. userId: {}, eventId: {}", userId, eventId);
         Event event = repository.findByIdAndInitiateId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Событие с id " + eventId + " не найдено"));
-        setViewsToEvent(event);
-        return EventMapper.toDto(event);
+        EventFullDto dto = EventMapper.toDto(event);
+        setViewsToEvent(event, dto);
+        return dto;
     }
 
     @Override
@@ -172,7 +176,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toDto(event);
     }
 
-    private void setViewsToEvents(List<Event> events) {
+    private void setViewsToEvents(List<Event> events, List<? extends EventShortDto> dtos) {
         List<Integer> ids = events.stream()
                 .map(Event::getId)
                 .collect(Collectors.toList());
@@ -187,19 +191,13 @@ public class EventServiceImpl implements EventService {
         LocalDateTime max = LocalDateTime.now();
         Map<Integer, Long> idsViews = statsService.getStats(min, max, ids, true).stream()
                 .collect(Collectors.toMap(view -> extractIdFromUrl(view.getUri()), ViewStatsDto::getHits));
-        for (Event event : events) {
-            event.setViews(idsViews.containsKey(event.getId()) ? idsViews.get(event.getId()) : 0);
+        for (EventShortDto dto : dtos) {
+            dto.setViews(idsViews.containsKey(dto.getId()) ? idsViews.get(dto.getId()) : 0);
         }
     }
 
-    private void setViewsToEvent(Event event) {
-        if (event.getState() != EventState.PUBLISHED) {
-            return;
-        }
-        List<ViewStatsDto> dtos = statsService.getStats(event.getCreatedOn(), LocalDateTime.now(), List.of(event.getId()), true);
-        if (!dtos.isEmpty()) {
-            event.setViews(dtos.get(0).getHits());
-        }
+    private void setViewsToEvent(Event event, EventShortDto dto) {
+        setViewsToEvents(List.of(event), List.of(dto));
     }
 
     private List<Integer> getPopularEventIds(List<ViewStatsDto> views, int from, int size) {
