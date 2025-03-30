@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -181,8 +180,7 @@ public class EventServiceImpl implements EventService {
                 .map(Event::getId)
                 .collect(Collectors.toList());
         LocalDateTime min = events.stream()
-                .map(Event::getCreatedOn)
-                .filter(Objects::nonNull)
+                .map(Event::getPublishedOn)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
         if (min == null) {

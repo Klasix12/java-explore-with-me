@@ -60,9 +60,6 @@ public class Event {
     @Column(name = "title")
     private String title;
 
-    @Transient
-    private long views;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "event_state")
     private EventState state;

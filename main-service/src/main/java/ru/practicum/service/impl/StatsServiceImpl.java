@@ -24,7 +24,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<Integer> ids, Boolean unique) {
         log.info("Получение статистики. start: {}, end: {}, ids: {}, unique: {}", start, end, ids, unique);
-        return service.getStats(start, end, ids.stream()
+        return service.getStats(start.minusSeconds(1), end.plusSeconds(1), ids.stream()
                 .map(id -> String.format("/events/%d", id))
                 .collect(Collectors.toList()), unique);
     }
