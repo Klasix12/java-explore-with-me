@@ -180,6 +180,7 @@ public class EventServiceImpl implements EventService {
                 .map(Event::getId)
                 .collect(Collectors.toList());
         LocalDateTime min = events.stream()
+                .filter(e -> e.getState() == EventState.PUBLISHED)
                 .map(Event::getPublishedOn)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
