@@ -2,9 +2,11 @@ package ru.practicum.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.dto.EndpointHitDto;
@@ -33,6 +35,9 @@ public class StatsClientService {
 
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/stats");
+        if (start != null && end != null && start.isAfter(end)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Дата старта не может быть позже даты окончания");
+        }
         if (start != null) {
             builder.queryParam("start", start.format(format));
         }
