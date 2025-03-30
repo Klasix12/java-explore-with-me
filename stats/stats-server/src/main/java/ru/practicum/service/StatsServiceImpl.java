@@ -2,8 +2,10 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.StatsParamsDto;
 import ru.practicum.dto.ViewStatsDto;
@@ -34,7 +36,9 @@ public class StatsServiceImpl implements StatsService {
         log.info("Получение статистики с параметрами: {}", params);
         LocalDateTime start = params.getStart() == null ? minTimestamp : params.getStart();
         LocalDateTime end = params.getEnd() == null ? maxTimestamp : params.getEnd();
-
+        if (start.isAfter(end)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Дата старта не может быть позже даты окончания");
+        }
         if (params.getUnique()) {
             if (params.hasUris()) {
                 return repository.findAllByTimestampAndUrisUnique(start, end, params.getUris());
