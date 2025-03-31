@@ -2,6 +2,7 @@ package ru.practicum.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import ru.practicum.util.DateFormat;
 
@@ -21,7 +22,7 @@ public class EndpointHitDto {
     @NotBlank
     private String ip;
 
-    @NotBlank
+    @NotNull
     @JsonFormat(pattern = DateFormat.DATE_TIME_FORMAT)
     private LocalDateTime timestamp;
 }
