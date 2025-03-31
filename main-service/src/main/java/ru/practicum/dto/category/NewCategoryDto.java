@@ -2,13 +2,9 @@ package ru.practicum.dto.category;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class NewCategoryDto {
     @NotBlank
     @Size(min = 1, max = 50)

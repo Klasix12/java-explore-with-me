@@ -2,16 +2,12 @@ package ru.practicum.dto.compilation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class NewCompilationDto {
     @NotBlank
     @Size(min = 1, max = 50)

@@ -1,18 +1,12 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import ru.practicum.dto.event.state.AdminStateAction;
 import ru.practicum.util.DateFormat;
 import ru.practicum.validator.FutureFrom;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
 public class UpdateEventAdminRequest extends BaseUpdateRequest<AdminStateAction> {
 
     @Override

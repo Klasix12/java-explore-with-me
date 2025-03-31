@@ -2,14 +2,12 @@ package ru.practicum.dto.event;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import ru.practicum.dto.LocationDto;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 public abstract class BaseUpdateRequest<T> {
     @Size(min = 20, max = 2000)
     private String annotation;

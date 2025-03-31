@@ -7,10 +7,8 @@ import ru.practicum.util.DateFormat;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class EndpointHitDto {
