@@ -13,6 +13,7 @@ import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.service.StatsService;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +43,12 @@ public class StatsControllerTest {
     @Test
     void hitTest() throws Exception {
         mvc.perform(post("/hit")
-                        .content(mapper.writeValueAsString(EndpointHitDto.builder().build()))
+                        .content(mapper.writeValueAsString(EndpointHitDto.builder()
+                                        .app("app")
+                                        .ip("127.0.0.1")
+                                .uri("uri")
+                                        .timestamp(LocalDateTime.now())
+                                .build()))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
