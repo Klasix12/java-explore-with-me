@@ -59,5 +59,6 @@ CREATE TABLE IF NOT EXISTS participation (
 
 CREATE TABLE IF NOT EXISTS compilations_events (
     compilation_id INTEGER REFERENCES compilations (id),
-    event_id INTEGER REFERENCES events (id)
+    event_id INTEGER REFERENCES events (id),
+    CONSTRAINT pk_compilation_of_events PRIMARY KEY (compilation_id, event_id)
 )
