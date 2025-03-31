@@ -21,7 +21,6 @@ import java.util.List;
 @Slf4j
 public class StatsController {
     private final StatsService statsService;
-    private static final String format = DateFormat.DATE_TIME_FORMAT;
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,8 +31,8 @@ public class StatsController {
 
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ViewStatsDto> getStats(@RequestParam @DateTimeFormat(pattern = format) LocalDateTime start,
-                                             @RequestParam @DateTimeFormat(pattern = format) LocalDateTime end,
+    public Collection<ViewStatsDto> getStats(@RequestParam @DateTimeFormat(pattern = DateFormat.DATE_TIME_FORMAT) LocalDateTime start,
+                                             @RequestParam @DateTimeFormat(pattern = DateFormat.DATE_TIME_FORMAT) LocalDateTime end,
                                              @RequestParam(required = false) List<String> uris,
                                              @RequestParam(defaultValue = "false") Boolean unique) {
         log.trace("Получение статистики");
