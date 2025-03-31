@@ -34,11 +34,5 @@
             <groupId>ru.practicum</groupId>
             <artifactId>stats-dto</artifactId>
         </dependency>
-
-        <!-- YP req -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
     </dependencies>
 </project>
