@@ -63,7 +63,13 @@ public class ErrorHandler {
         return getDefaultError(e, "Ошибка при создании запроса на участие", HttpStatus.CONFLICT);
     }
 
-    private ApiErrorDto getDefaultError(Exception e, String reason, HttpStatus status) {
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiErrorDto handleThrowable(Throwable e) {
+        return getDefaultError(e, "Внутренняя ошибка", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ApiErrorDto getDefaultError(Throwable e, String reason, HttpStatus status) {
         return ApiErrorDto.builder()
                 .message(e.getMessage())
                 .reason(reason)
