@@ -3,6 +3,7 @@ package ru.practicum.controller;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -61,6 +62,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiErrorDto handleUpdateRequestException(UpdateRequestException e) {
         return getDefaultError(e, "Ошибка при создании запроса на участие", HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorDto handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        return getDefaultError(e, "Отсутствует обязательный параметр в запросе", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
