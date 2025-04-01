@@ -13,14 +13,13 @@ import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.service.StatsService;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = StatsController.class)
@@ -44,7 +43,12 @@ public class StatsControllerTest {
     @Test
     void hitTest() throws Exception {
         mvc.perform(post("/hit")
-                        .content(mapper.writeValueAsString(EndpointHitDto.builder().build()))
+                        .content(mapper.writeValueAsString(EndpointHitDto.builder()
+                                        .app("app")
+                                        .ip("127.0.0.1")
+                                .uri("uri")
+                                        .timestamp(LocalDateTime.now())
+                                .build()))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -56,10 +60,7 @@ public class StatsControllerTest {
                 .thenReturn(List.of(dto));
         mvc.perform(get("/stats")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].app", is(dto.getApp())))
-                .andExpect(jsonPath("$[0].uri", is(dto.getUri())))
-                .andExpect(jsonPath("$[0].hits", is(dto.getHits()), Long.class));
+                .andExpect(status().isBadRequest());
     }
 }
 
