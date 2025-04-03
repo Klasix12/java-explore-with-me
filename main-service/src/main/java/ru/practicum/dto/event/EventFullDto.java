@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ru.practicum.dto.LocationDto;
+import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.event.state.EventState;
 import ru.practicum.util.DateFormat;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +34,6 @@ public class EventFullDto extends EventShortDto {
     private Boolean requestModeration;
 
     private EventState state;
+
+    private List<CommentDto> comments;
 }
