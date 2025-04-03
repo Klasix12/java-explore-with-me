@@ -2,7 +2,6 @@ package ru.practicum.controller.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.service.CommentService;
@@ -10,7 +9,6 @@ import ru.practicum.service.CommentService;
 import java.util.List;
 
 @Slf4j
-@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/events/{eventId}/comments")

@@ -12,7 +12,6 @@ import ru.practicum.service.CommentService;
 import ru.practicum.validator.Update;
 
 @Slf4j
-@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users/{userId}/events/{eventId}/comment")
